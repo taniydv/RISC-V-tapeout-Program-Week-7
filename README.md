@@ -186,6 +186,48 @@ Command for Route:
 make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk route
 
 5. Post-Route SPEF Generation
+Post-route SPEF generation is the process of extracting the final parasitic RC values (resistance and capacitance) from a fully routed layout and writing them into a SPEF (Standard Parasitic Exchange Format) file.
+This happens after place-and-route is complete, when wire geometry is fixed.
+SPEF (IEEE 1481 standard) is a file format used to represent parasitic extraction data of a chip’s interconnects:
+
+R → resistance
+
+C → capacitance (to ground + coupling)
+
+L (optional) → inductance
+
+Net topology
+
+It is done to provide accurate interconnect parasitics for sign-off static timing analysis (STA). Also, Post-route timing uses real RC values instead of rough estimates.
+
+- Extract Parasitics
+extract_parasitics
+  [-ext_model_file filename]      pointer to the Extraction Rules file
+
+  [-corner_cnt count]             process corner count
+
+  [-max_res ohms]                 combine resistors in series up to
+                                  <max_res> value in OHMS
+
+  [-coupling_threshold fF]        coupling below the threshold is grounded
+
+  [-lef_res]                      use per-unit RC defined in LEF
+
+  [-cc_model track]               calculate coupling within
+                                  <cc_model> distance
+
+  [-context_depth depth]          calculate upper/lower coupling from
+                                  <depth> level away
+
+  [-no_merge_via_res]             separate via resistance
+
+The extract_parasitics command performs parasitic extraction based on the routed design. If there is no routed design information, then no parasitics are returned. Use ext_model_file to specify the Extraction Rules file used for the extraction.
+
+The cc_model option is used to specify the maximum number of tracks of lateral context that the tool considers on the same routing level. The default value is 10. The context_depth option is used to specify the number of levels of vertical context that OpenRCX needs to consider for the over/under context overlap for capacitance calculation. The default value is 5. The max_res option combines resistors in series up to the threshold value. The no_merge_via_res option separates the via resistance from the wire resistance.
+
+The corner_cnt defines the number of corners used during the parasitic extraction.
+The write_spef command writes the .spef output of the parasitics stored in the database. Use net_id option to write out .spef for specific nets.
+Use the adjust_rc command to scale the resistance, ground, and coupling capacitance. The res_factor specifies the scale factor for resistance. The cc_factor specifies the scale factor for coupling capacitance. The gndc_factor specifies the scale factor for ground capacitance.
 
 ### Acknowledgement
 I'm very thankful to VSD team for this RISC-V tapeout chip program.
