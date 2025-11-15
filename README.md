@@ -31,6 +31,14 @@ make
 
 make gui_final
 
+- Synthesis Netlist
+
+- Synthesis log
+
+- Synthesis Check
+
+- Synthesis Stat
+- 
 ### OpenROAD Directory Structure
 -OpenROAD-flow-scripts             
  
@@ -139,23 +147,45 @@ make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk synth
 
 ### Physical Design of BabySoC
 1. BabySoC Floorplanning
+Florplanning is the initial stage of VLSI physical design where the chip is partitioned and the marcos are placed. Here the relative locations and the shapes of major functional blocks on a chip are determined.
 
+Command for Floorplan:
+
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk floorplan
+
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk gui_floorplan
   
-
-
 2. Placement
+In the placement step the locations of standard cells are defined and are placed. Its goal is to assign positions to these cells without overlap, while optimizing for metrics like area, timing, and power, and ensuring the design can be successfully routed later. 
+
+Command dor Placement:
+
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk place
+
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk gui_place
+
+Heatmap
 
 
+3. Clock Tree Synthesis
+CTS is used to create the clock distribution network. Its goal is to deliver the clock to all sequential elements with the minimum skew. Ideally the skew is 0. The tree is usually in the shape of H or X. 
 
+Command for CTS:
 
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk cts
 
-3. Routing
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk gui_cts
 
+CTS Final Report:
 
+4. Routing
+Routing is the process of interconnecting the components and the available metal layers. Metal tracks forms a routing grid. It is based on divide and conquer approach. In global routing the routing grids are generatedwhile in detailed routing the actual wiring is takes place.
 
+Command for Route:
 
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk route
 
-4. Post-Route SPEF Generation
+5. Post-Route SPEF Generation
 
 ### Acknowledgement
 I'm very thankful to VSD team for this RISC-V tapeout chip program.
